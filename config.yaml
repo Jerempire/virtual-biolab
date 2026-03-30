@@ -71,12 +71,12 @@ gates:
 
 # Crowdfunding
 crowdfund:
-  synthesis_cost_usd: 1500
+  synthesis_cost_usd: 200
   platforms:
     - name: experiment_com
       fee_percent: 8
       model: all_or_nothing
-      target_usd: 2000           # covers synthesis + fees + shipping
+      target_usd: 1300           # covers synthesis + assays + fees
     - name: beach_science
       fee_percent: 0
       model: hypothesis_post

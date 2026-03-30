@@ -30,7 +30,7 @@ DeSci infrastructure (Bio Protocol + Molecule) solves all four:
 - Community-driven critique via Beach Science agents
 - IP protection via Molecule data rooms if results are positive
 
-### What $2,200 Buys (Minimum Viable Experiment)
+### What $1,400 Buys (Minimum Viable Experiment)
 
 - Peptide synthesis (GenScript) + scrambled control
 - ERAP2 binding assay + ERAP1/IRAP selectivity counter-screen
@@ -41,7 +41,7 @@ DeSci infrastructure (Bio Protocol + Molecule) solves all four:
 
 | Phase | Cost | Timeline | Deliverable |
 |-------|------|----------|-------------|
-| Phase 1: Synthesis + binding | $2,200 | 5-7 weeks | IC50, selectivity data |
+| Phase 1: Synthesis + binding | $1,400 | 5-7 weeks | IC50, selectivity data |
 | Phase 2: Optimization (D-amino acids, stapling) | $15,000 | 3 months | Stabilized lead |
 | Phase 3: Cell-based assays | $25,000 | 3 months | Cellular activity proof |
 | Phase 4: PK studies (mouse) | $30,000 | 3 months | In vivo half-life |

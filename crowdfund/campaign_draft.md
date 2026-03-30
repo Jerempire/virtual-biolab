@@ -22,15 +22,15 @@ Our pipeline:
 
 ## What We Need
 
-We need **$2,200** to synthesize VAGSAF and test it in a wet lab:
+We need **$1,400** to synthesize VAGSAF and test it in a wet lab:
 
 | Item | Cost |
 |------|------|
-| Peptide synthesis (VAGSAF + scrambled control) | $800 |
+| Peptide synthesis (VAGSAF + scrambled control) | $330 |
 | ERAP2 binding assay (dose-response) | $400 |
-| ERAP1 + IRAP selectivity counter-screen | $400 |
+| ERAP1 + IRAP selectivity counter-screen | $200 |
 | Lab consumables + shipping | $175 |
-| Platform fees + contingency | $425 |
+| Platform fees + contingency | $295 |
 
 **Timeline:** 5-7 weeks from funding to results.
 

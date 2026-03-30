@@ -12,17 +12,17 @@ items:
     item: "Custom peptide synthesis — VAGSAF (6-mer)"
     vendor: GenScript
     quantity: "5 mg, >95% purity (HPLC)"
-    unit_cost: 600
+    unit_cost: 180
     notes: |
       Standard Fmoc solid-phase synthesis. 6-mer is straightforward.
       Includes N-terminal acetylation and C-terminal amidation for stability.
-      GenScript typical turnaround: 2-3 weeks.
+      GenScript typical turnaround: 2-3 weeks. Priced per genscript.com/peptide.html.
 
   - category: synthesis
     item: "Scrambled control peptide — SFGAAV"
     vendor: GenScript
     quantity: "5 mg, >95% purity"
-    unit_cost: 200
+    unit_cost: 150
     notes: "Same amino acids, randomized sequence. Essential negative control."
 
   # ── Binding Assay ──────────────────────────────────────────
@@ -65,25 +65,25 @@ items:
   # ── Platform Fees ──────────────────────────────────────────
   - category: fees
     item: "Experiment.com platform fee (8%)"
-    unit_cost: 142
-    notes: "8% of $1,775 subtotal"
+    unit_cost: 89
+    notes: "8% of $1,105 subtotal"
 
   - category: fees
     item: "Payment processing fee (~3%)"
-    unit_cost: 53
+    unit_cost: 33
 
   # ── Contingency ────────────────────────────────────────────
   - category: contingency
     item: "10% contingency for repeat assays or troubleshooting"
-    unit_cost: 178
+    unit_cost: 111
 
 # ── Summary ──────────────────────────────────────────────────
 summary:
-  subtotal: 1775
-  platform_fees: 195
-  contingency: 178
-  total: 2148
-  funding_target: 2200   # round up for clean campaign number
+  subtotal: 1105
+  platform_fees: 122
+  contingency: 111
+  total: 1338
+  funding_target: 1400   # round up for clean campaign number
 
 timeline:
   synthesis: "2-3 weeks (GenScript)"

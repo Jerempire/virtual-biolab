@@ -41,7 +41,7 @@ No selective ERAP2 drugs exist. The first selective nanomolar small-molecule inh
 1. Synthesize VAGSAF + scrambled control (GenScript, >95% purity)
 2. ERAP2 fluorescence polarization enzymatic assay (dose-response, IC50)
 3. ERAP1 and IRAP counter-screens (same assay)
-4. Estimated cost: $2,200 | Timeline: 5-7 weeks
+4. Estimated cost: $1,400 | Timeline: 5-7 weeks
 
 ## Success Criteria
 - VAGSAF IC50 < 10 uM against ERAP2
