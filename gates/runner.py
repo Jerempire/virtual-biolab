@@ -343,10 +343,79 @@ class GateRunner:
                 result.status = "fail"
                 result.notes = f"Critic agent error: {e}"
 
-        # Gates 6-8: Not yet implemented
-        elif gate_num in (6, 7, 8):
-            result.status = "pending"
-            result.notes = f"Agent not yet implemented — Phase 2"
+        # Gate 6: Scout (Literature Cross-Validation)
+        elif gate_num == 6:
+            try:
+                sys.path.insert(0, str(PROJECT_ROOT))
+                from agents.scout import ScoutAgent
+                scout = ScoutAgent(self.config)
+                scout_report = scout.scan(candidate, target)
+
+                if scout_report.gate_passed:
+                    result.status = "pass"
+                else:
+                    result.status = "fail"
+
+                result.evidence = [
+                    f"Supporting: {len(scout_report.supporting)} papers",
+                    f"Contradicting: {len(scout_report.contradicting)} papers",
+                ]
+
+                out_dir = PROJECT_ROOT / "outputs" / "scout"
+                scout_report.save(out_dir)
+
+            except Exception as e:
+                result.status = "fail"
+                result.notes = f"Scout agent error: {e}"
+
+        # Gate 7: Synthesizer (Feasibility)
+        elif gate_num == 7:
+            try:
+                sys.path.insert(0, str(PROJECT_ROOT))
+                from agents.synthesizer import SynthesizerAgent
+                synth = SynthesizerAgent(self.config)
+                synth_report = synth.evaluate(candidate, target)
+
+                if synth_report.gate_passed:
+                    result.status = "pass"
+                else:
+                    result.status = "fail"
+
+                n_pass = len([c for c in synth_report.checks if c.status == "pass"])
+                n_warn = len([c for c in synth_report.checks if c.status == "warn"])
+                n_fail = len([c for c in synth_report.checks if c.status == "fail"])
+                result.evidence = [f"{n_pass} pass, {n_warn} warn, {n_fail} fail"]
+                if n_warn > 0:
+                    warns = [c.name for c in synth_report.checks if c.status == "warn"]
+                    result.notes = f"Warnings: {', '.join(warns)}"
+
+                out_dir = PROJECT_ROOT / "outputs" / "synthesis"
+                synth_report.save(out_dir)
+
+            except Exception as e:
+                result.status = "fail"
+                result.notes = f"Synthesizer agent error: {e}"
+
+        # Gate 8: Protocol Writer
+        elif gate_num == 8:
+            try:
+                sys.path.insert(0, str(PROJECT_ROOT))
+                from agents.protocol_writer import ProtocolWriter
+                writer = ProtocolWriter(self.config)
+                protocol = writer.generate(candidate, target)
+
+                result.status = "pass"
+                result.evidence = [
+                    f"Synthesis spec: {len(protocol.synthesis_spec)} parameters",
+                    f"Success criteria: {len(protocol.success_criteria)} defined",
+                ]
+
+                out_dir = PROJECT_ROOT / "outputs" / "protocols"
+                protocol.save(out_dir)
+
+            except Exception as e:
+                result.status = "fail"
+                result.notes = f"Protocol writer error: {e}"
 
         return result
 

@@ -230,11 +230,13 @@ class CriticAgent:
             self._pubmed_fetch = None
 
         try:
-            from chembl_search import search_chembl
-            self._chembl = search_chembl
+            from chembl_search import search_molecules, _mol_props
+            self._chembl_search = search_molecules
+            self._chembl_props = _mol_props
         except ImportError:
             print("[WARN] chembl_search not available — compound queries will be skipped")
-            self._chembl = None
+            self._chembl_search = None
+            self._chembl_props = None
 
         self._tools_loaded = True
 
@@ -333,8 +335,8 @@ class CriticAgent:
                 claim=f"Found {len(chembl_hits)} existing compounds targeting {target} in ChEMBL",
                 evidence=[{
                     "source": "chembl",
-                    "id": h.get("molecule_chembl_id", ""),
-                    "summary": f"{h.get('pref_name', 'unnamed')} — {h.get('mechanism', 'unknown mechanism')}"
+                    "id": h.get("chembl_id", ""),
+                    "summary": f"{h.get('pref_name') or 'unnamed'} — MW: {h.get('mw', '?')}, phase: {h.get('max_phase', '?')}"
                 } for h in chembl_hits[:5]],
             ))
 
@@ -421,10 +423,13 @@ class CriticAgent:
 
     def _search_chembl(self, target: str) -> list[dict]:
         """Search ChEMBL via ScienceClaw tool."""
-        if self._chembl is None:
+        if self._chembl_search is None:
             return []
         try:
-            return self._chembl(target, max_results=10)
+            raw = self._chembl_search(target, max_results=10)
+            if self._chembl_props:
+                return [self._chembl_props(m) for m in raw]
+            return raw
         except Exception as e:
             print(f"[WARN] ChEMBL search failed for '{target}': {e}")
             return []
