@@ -1,0 +1,88 @@
+# Virtual Biolab Configuration
+# References the parent ancient-drug-discovery project for targets and tools
+
+project:
+  name: virtual-biolab
+  version: "0.1.0"
+  description: "Multi-agent adversarial critique pipeline for peptide drug discovery"
+
+paths:
+  parent_project: "../ancient-drug-discovery"
+  targets_yaml: "../ancient-drug-discovery/targets.yaml"
+  tools_dir: "../ancient-drug-discovery/tools"
+  scoring_dir: "../ancient-drug-discovery/scoring"
+  boltz_runner: "../ancient-drug-discovery/scripts/boltz_runner.py"
+  outputs: "./outputs"
+
+# Primary target for proof-of-concept
+primary_target:
+  gene: ERAP2
+  uniprot: Q6P179
+  lead_candidate: VAGSAF
+  selectivity_targets:
+    on_target: ERAP2_K392
+    off_targets:
+      - ERAP1
+      - IRAP
+
+# Agent configuration
+agents:
+  critic:
+    # Minimum evidence requirements for each objection
+    min_pubmed_citations: 1
+    min_evidence_sources: 2
+    # Categories the critic evaluates
+    critique_axes:
+      - selectivity        # off-target binding risk
+      - bioavailability    # peptide stability, half-life
+      - prior_art          # existing compounds that already solve this
+      - mechanism          # does the proposed mechanism hold up
+      - reproducibility    # can results be replicated (sample size, methods)
+
+  scout:
+    search_databases:
+      - pubmed
+      - chembl
+      - uniprot
+      - clinical_trials
+    max_results_per_query: 20
+    cross_discipline_domains:
+      - oncology
+      - autoimmune
+      - structural_biology
+      - peptide_therapeutics
+
+  synthesizer:
+    output_format: markdown
+    include_confidence_scores: true
+
+  protocol_writer:
+    target_labs:
+      - genscript          # peptide synthesis
+      - ginkgo             # cloud bio lab
+    output_format: markdown
+
+# Gate pipeline thresholds
+gates:
+  boltz2_min_samples: 3
+  selectivity_iptm_gap: 0.3     # on-target minus off-target ipTM
+  critic_max_unresolved: 1       # max unresolved critical objections to pass
+  literature_contradiction_threshold: 2  # papers contradicting hypothesis
+
+# Crowdfunding
+crowdfund:
+  synthesis_cost_usd: 1500
+  platforms:
+    - name: experiment_com
+      fee_percent: 8
+      model: all_or_nothing
+      target_usd: 2000           # covers synthesis + fees + shipping
+    - name: beach_science
+      fee_percent: 0
+      model: hypothesis_post
+      url: "https://beach.science"
+    - name: vitadao
+      fee_percent: 0
+      model: dao_grant
+      grant_size_usd: 100000
+      url: "https://molecule.xyz"

@@ -1,0 +1,99 @@
+# Wet Lab Budget for VAGSAF ERAP2 Selective Peptide
+# Based on GenScript pricing and standard academic assay costs
+
+candidate: VAGSAF
+target: ERAP2
+currency: USD
+
+items:
+
+  # ── Peptide Synthesis ──────────────────────────────────────
+  - category: synthesis
+    item: "Custom peptide synthesis — VAGSAF (6-mer)"
+    vendor: GenScript
+    quantity: "5 mg, >95% purity (HPLC)"
+    unit_cost: 600
+    notes: |
+      Standard Fmoc solid-phase synthesis. 6-mer is straightforward.
+      Includes N-terminal acetylation and C-terminal amidation for stability.
+      GenScript typical turnaround: 2-3 weeks.
+
+  - category: synthesis
+    item: "Scrambled control peptide — SFGAAV"
+    vendor: GenScript
+    quantity: "5 mg, >95% purity"
+    unit_cost: 200
+    notes: "Same amino acids, randomized sequence. Essential negative control."
+
+  # ── Binding Assay ──────────────────────────────────────────
+  - category: assay
+    item: "ERAP2 enzymatic activity assay (fluorescence polarization)"
+    vendor: "CRO or university core facility"
+    quantity: "Dose-response curve, 8 concentrations, triplicate"
+    unit_cost: 400
+    notes: |
+      Measures peptide inhibition of ERAP2 aminopeptidase activity.
+      Uses fluorogenic substrate (L-AMC). IC50 determination.
+      Can use recombinant ERAP2 from R&D Systems (#3830-ZN).
+
+  # ── Selectivity Counter-Screen ─────────────────────────────
+  - category: assay
+    item: "ERAP1 counter-screen (same fluorescence polarization assay)"
+    vendor: "CRO or university core facility"
+    quantity: "Dose-response curve, 8 concentrations, triplicate"
+    unit_cost: 200
+    notes: "Recombinant ERAP1 from R&D Systems (#2334-ZN). Critical selectivity data."
+
+  - category: assay
+    item: "IRAP counter-screen"
+    vendor: "CRO or university core facility"
+    quantity: "Dose-response curve, 8 concentrations, triplicate"
+    unit_cost: 200
+    notes: "Recombinant IRAP from R&D Systems. Second off-target check."
+
+  # ── Logistics ──────────────────────────────────────────────
+  - category: logistics
+    item: "Shipping (dry ice, peptide + reagents)"
+    vendor: Various
+    unit_cost: 75
+
+  - category: logistics
+    item: "Lab consumables (plates, tips, buffers)"
+    vendor: Various
+    unit_cost: 100
+
+  # ── Platform Fees ──────────────────────────────────────────
+  - category: fees
+    item: "Experiment.com platform fee (8%)"
+    unit_cost: 142
+    notes: "8% of $1,775 subtotal"
+
+  - category: fees
+    item: "Payment processing fee (~3%)"
+    unit_cost: 53
+
+  # ── Contingency ────────────────────────────────────────────
+  - category: contingency
+    item: "10% contingency for repeat assays or troubleshooting"
+    unit_cost: 178
+
+# ── Summary ──────────────────────────────────────────────────
+summary:
+  subtotal: 1775
+  platform_fees: 195
+  contingency: 178
+  total: 2148
+  funding_target: 2200   # round up for clean campaign number
+
+timeline:
+  synthesis: "2-3 weeks (GenScript)"
+  assay_setup: "1 week (reagent ordering)"
+  assays: "1-2 weeks (dose-response + counter-screens)"
+  analysis: "1 week"
+  total: "5-7 weeks from funding to results"
+
+success_criteria:
+  - "VAGSAF IC50 < 10 uM against ERAP2"
+  - "VAGSAF IC50 > 100 uM against ERAP1 (>10x selectivity)"
+  - "VAGSAF IC50 > 100 uM against IRAP (>10x selectivity)"
+  - "Scrambled control shows no inhibition (IC50 > 1 mM)"

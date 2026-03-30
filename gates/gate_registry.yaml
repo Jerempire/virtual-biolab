@@ -1,0 +1,165 @@
+# 9-Gate Peptide Discovery Pipeline
+# Gates 1-4: inherited from ancient-drug-discovery (validation only)
+# Gates 5-9: new adversarial critique + wet lab prep
+
+gates:
+
+  # ── INHERITED GATES (check existing results) ────────────────────
+
+  gate_1:
+    name: Target Validation
+    description: "Confirm GWAS evidence, evolutionary selection, and disease association"
+    source: "ancient-drug-discovery scripts 01-03"
+    type: inherited
+    pass_criteria:
+      - "GWAS significance p < 5e-8 for at least one variant"
+      - "Published selection evidence (Nature/Science tier)"
+      - "Disease association in OpenTargets with score > 0.5"
+    evidence_files:
+      - "data/processed/gwas_erap2_flat.csv"
+      - "data/processed/erap2_variant_master.csv"
+
+  gate_2:
+    name: Peptide Generation
+    description: "Candidate peptides designed via PepMLM/MPNN"
+    source: "ancient-drug-discovery v4/pepmlm/"
+    type: inherited
+    pass_criteria:
+      - "At least 3 candidate peptides generated"
+      - "Sequence length 5-15 residues"
+      - "No known toxic motifs (checked via TDC)"
+
+  gate_3:
+    name: Structure Prediction
+    description: "Boltz-2 binding prediction with adequate sampling"
+    source: "boltz_runner.py"
+    type: inherited
+    pass_criteria:
+      - "Minimum 3 diffusion samples per complex"
+      - "Mean ipTM > 0.7 for on-target"
+      - "Confidence interval width < 0.15"
+    parameters:
+      min_diffusion_samples: 3
+      seed: 42
+
+  gate_4:
+    name: Selectivity Screen
+    description: "Cross-screen against off-targets (ERAP1, IRAP)"
+    source: "boltz_runner.py with PDB templates"
+    type: inherited
+    pass_criteria:
+      - "On-target ipTM > 0.8"
+      - "Off-target ipTM < 0.5 (both ERAP1 and IRAP)"
+      - "ipTM gap > 0.3 (on minus max off)"
+      - "Minimum 5 diffusion samples for selectivity claims"
+    parameters:
+      min_diffusion_samples: 5
+      require_pdb_templates: true
+
+  # ── NEW GATES (adversarial critique layer) ──────────────────────
+
+  gate_5:
+    name: Adversarial Critique
+    description: "Critic agent challenges findings across 5 axes"
+    source: "agents/critic.py"
+    type: agent
+    pass_criteria:
+      - "All critical objections resolved with evidence"
+      - "Maximum 1 unresolved minor objection"
+      - "Each objection backed by PubMed/ChEMBL citation"
+    critique_axes:
+      - axis: selectivity
+        question: "Could the peptide bind structurally similar aminopeptidases?"
+        evidence_required: "Structural alignment or binding data"
+      - axis: bioavailability
+        question: "What is the expected half-life? Protease susceptibility?"
+        evidence_required: "Literature on similar peptide stability"
+      - axis: prior_art
+        question: "Do existing ERAP2 inhibitors already achieve this?"
+        evidence_required: "ChEMBL compound search"
+      - axis: mechanism
+        question: "Does allosteric vs active site binding matter here?"
+        evidence_required: "Structural evidence from PDB or literature"
+      - axis: reproducibility
+        question: "Are Boltz-2 predictions reliable for this complex type?"
+        evidence_required: "Benchmark data or similar validated predictions"
+
+  gate_6:
+    name: Literature Cross-Validation
+    description: "Scout agent searches for contradicting or supporting evidence"
+    source: "agents/scout.py"
+    type: agent
+    pass_criteria:
+      - "No more than 2 contradicting papers found"
+      - "At least 3 supporting papers found"
+      - "No retracted papers in evidence chain"
+    search_queries:
+      - "ERAP2 selective inhibitor peptide"
+      - "ERAP2 vs ERAP1 selectivity determinants"
+      - "aminopeptidase peptide drug stability"
+      - "{candidate_sequence} binding affinity"
+
+  gate_7:
+    name: Synthesis Feasibility
+    description: "Check solubility, toxicity, cleavage resistance, manufacturability"
+    source: "agents/synthesizer.py"
+    type: agent
+    pass_criteria:
+      - "No predicted CYP450 inhibition (TDC check)"
+      - "Predicted solubility > 1 mg/mL"
+      - "No known toxic subsequences"
+      - "Synthesis complexity score < 3 (GenScript scale)"
+      - "Estimated purity achievable > 95%"
+    checks:
+      - name: toxicity
+        tool: tdc_predict
+        threshold: "safe"
+      - name: solubility
+        tool: chembl_search
+        threshold: "> 1 mg/mL for similar peptides"
+      - name: cleavage
+        tool: literature
+        check: "protease-resistant modifications available?"
+
+  gate_8:
+    name: Wet Lab Protocol
+    description: "Generate synthesis and assay protocol ready for GenScript/Ginkgo"
+    source: "agents/protocol_writer.py"
+    type: agent
+    pass_criteria:
+      - "Complete synthesis specification (sequence, modifications, purity)"
+      - "Binding assay protocol (fluorescence polarization or SPR)"
+      - "Selectivity assay protocol (ERAP1/IRAP counter-screen)"
+      - "Expected timeline and deliverables defined"
+    deliverables:
+      - "Peptide synthesis order specification"
+      - "In vitro binding assay protocol"
+      - "Selectivity counter-screen protocol"
+      - "Success/failure criteria for wet lab results"
+
+  gate_9:
+    name: Cost & Funding
+    description: "Budget breakdown and crowdfunding campaign generation"
+    source: "crowdfund/"
+    type: funding
+    pass_criteria:
+      - "Itemized budget with vendor quotes"
+      - "At least one crowdfunding campaign drafted"
+      - "Campaign narrative reviewed and approved"
+    budget_items:
+      - item: "Peptide synthesis (GenScript)"
+        estimated_usd: 800
+        notes: "6-mer, >95% purity, 5mg scale"
+      - item: "Fluorescence polarization assay"
+        estimated_usd: 400
+        notes: "ERAP2 enzymatic activity assay"
+      - item: "Selectivity counter-screen"
+        estimated_usd: 300
+        notes: "ERAP1 + IRAP same assay"
+      - item: "Shipping and handling"
+        estimated_usd: 100
+      - item: "Platform fees (8%)"
+        estimated_usd: 128
+      - item: "Contingency (10%)"
+        estimated_usd: 173
+    total_estimated_usd: 1901
